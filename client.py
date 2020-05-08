@@ -6,8 +6,8 @@ import threading
 import os
 
 
-# window always appears in same place relative to upper-left corner
-os.environ['SDL_VIDEO_WINDOW_POS'] = '400, 100'
+# window always appears in same place relative to upper-left corner (diff position from server)
+os.environ['SDL_VIDEO_WINDOW_POS'] = '850, 100'
 
 # create playing surface
 surface = pygame.display.set_mode((600, 600))
@@ -31,6 +31,15 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.connect((HOST, PORT))
 
 
+def receive_data():
+    # infinite while loop: don't receive data in closed connection, always check if new data coming in
+    while True:
+        # block main thread, amount of bytes it can receive + decode byte string to regular string
+        data = sock.recv(1024).decode()
+        print(data)
+
+
+create_thread(receive_data)
 
 # import grid object
 
@@ -50,10 +59,14 @@ while game_still_going:
             # index indicates which mouse button is being pressed ([0] = left, [1] = middle, [2] = right)
             if pygame.mouse.get_pressed()[0]:
                 pos = pygame.mouse.get_pos()
+                cellX, cellY = pos[0] // 200, pos[1] // 200
                 # convert screen coords into cell coords
                 # each cell is 200x200 rectangle so divide by 200 (always divide by dimensions cell)
                 # using integer division (//), we will get the integer coords of [0-2, 0-2]
-                grid.get_mouse(pos[0] // 200, pos[1] // 200, current_player)
+                grid.get_mouse(cellX, cellY, current_player)
+                send_data = f'{cellX}-{cellY}'.encode()
+                # on the client side we're using socket send method
+                sock.send(send_data)
                 # flip player
                 # use switch_player variable to make sure that we don't switch when clicking on non-empty cell
                 if grid.switch_player:

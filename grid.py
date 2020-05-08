@@ -34,10 +34,10 @@ class Grid:
             # go through inner list
             for x in range(len(self.grid[y])):
                 # project cookie onto cell if player is x, 200x200 relative to left upper corner cell
-                if self.get_cell_value(x, y) == "X":
+                if self.get_cell_value(x, y) == "Cookie":
                     surface.blit(cookie, (x * 200, y * 200))
                 # project donut onto cell if player is o
-                if self.get_cell_value(x, y) == "O":
+                if self.get_cell_value(x, y) == "Donut":
                     surface.blit(donut, (x * 200, y * 200))
 
     def get_cell_value(self, x, y):
@@ -52,11 +52,11 @@ class Grid:
         # use switch_player variable to make sure that we don't switch when clicking on non-empty cell
         if self.get_cell_value(x, y) == 0:
             self.switch_player = True
-            if current_player == "X":
-                self.set_cell_value(x, y, "X")
+            if current_player == "Cookie":
+                self.set_cell_value(x, y, "Cookie")
                 self.check_grid(x, y, current_player)
-            elif current_player == "O":
-                self.set_cell_value(x, y, "O")
+            elif current_player == "Donut":
+                self.set_cell_value(x, y, "Donut")
                 self.check_grid(x, y, current_player)
         else:
             self.switch_player = False
