@@ -51,13 +51,9 @@ class Grid:
         # only execute inner if statement if cell is empty
         # use switch_player variable to make sure that we don't switch when clicking on non-empty cell
         if self.get_cell_value(x, y) == 0:
-            self.switch_player = True
-            if current_player == "Cookie":
-                self.set_cell_value(x, y, "Cookie")
-                self.check_grid(x, y, current_player)
-            elif current_player == "Donut":
-                self.set_cell_value(x, y, "Donut")
-                self.check_grid(x, y, current_player)
+            # remove player switching because this happens through server and client
+            self.set_cell_value(x, y, current_player)
+            self.check_grid(x, y, current_player)
         else:
             self.switch_player = False
 

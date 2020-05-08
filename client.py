@@ -33,9 +33,18 @@ sock.connect((HOST, PORT))
 
 def receive_data():
     # infinite while loop: don't receive data in closed connection, always check if new data coming in
+    global turn
     while True:
         # block main thread, amount of bytes it can receive + decode byte string to regular string
         data = sock.recv(1024).decode()
+        data = data.split('-')  # will create a list with data x, y, yourturn, playing
+        x, y = int(data[0]), int(data[0])  # receive x and y as integer from data list
+        if data[2] == "yourturn":
+            turn = True
+        if data[3] == 'False':
+            grid.game_over = True  #when playing is false, game is over
+        if grid.get_cell_value(x, y) == 0:
+            grid.set_cell_value(x, y, current_player)
         print(data)
 
 
@@ -48,7 +57,9 @@ grid = Grid()
 # set game running to true
 game_still_going = True
 
-current_player = "Cookie"
+current_player = "Donut"
+turn = False
+playing = "True"
 
 # execute while loop while game running, game stops running when player quits
 while game_still_going:
@@ -58,22 +69,19 @@ while game_still_going:
         if event.type == pygame.MOUSEBUTTONDOWN and not grid.game_over:
             # index indicates which mouse button is being pressed ([0] = left, [1] = middle, [2] = right)
             if pygame.mouse.get_pressed()[0]:
-                pos = pygame.mouse.get_pos()
-                cellX, cellY = pos[0] // 200, pos[1] // 200
-                # convert screen coords into cell coords
-                # each cell is 200x200 rectangle so divide by 200 (always divide by dimensions cell)
-                # using integer division (//), we will get the integer coords of [0-2, 0-2]
-                grid.get_mouse(cellX, cellY, current_player)
-                send_data = f'{cellX}-{cellY}'.encode()
-                # on the client side we're using socket send method
-                sock.send(send_data)
-                # flip player
-                # use switch_player variable to make sure that we don't switch when clicking on non-empty cell
-                if grid.switch_player:
-                    if current_player == "Cookie":
-                        current_player = "Donut"
-                    else:
-                        current_player = "Cookie"
+                if turn and not grid.game_over:
+                    pos = pygame.mouse.get_pos()
+                    cellX, cellY = pos[0] // 200, pos[1] // 200
+                    # convert screen coords into cell coords
+                    # each cell is 200x200 rectangle so divide by 200 (always divide by dimensions cell)
+                    # using integer division (//), we will get the integer coords of [0-2, 0-2]
+                    grid.get_mouse(cellX, cellY, current_player)
+                    send_data = f'{cellX}-{cellY}-{"yourturn"}-{playing}'.encode()
+                    # on the client side we're using socket send method
+                    sock.send(send_data)
+                    # flip player
+                    # use switch_player variable to make sure that we don't switch when clicking on non-empty cell
+                    turn = False
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE and grid.game_over:
                 grid.clear_grid()
