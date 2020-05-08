@@ -12,22 +12,31 @@ surface = pygame.display.set_mode((600, 600))
 pygame.display.set_caption('Cookie vs. Donut')
 
 
+# create a thread instance and tell it to start
+# daemon threads = backgrounds tasks, okay to kill once other non-daemon threads have exited
 def create_thread(target):
     thread = threading.Thread(target=target)
-    #  daemon: when program quits, any daemon threads are killed automatically
     thread.daemon = True
     thread.start()
 
 
-HOST = '127.0.0.1'
-PORT = 65432
+HOST = '127.0.0.1'  # standard loopback interface address (localhost)
+# only processes on the host can connect to server, empty string = connections on all available IPv4 interfaces
+PORT = 65432  # Port to listen on (non-privileged are > 1023)
 connection_established = False
 conn, addr = None, None
 
-# 1: protocol 2: TCP, default values for socket but added for reference
+# 1: create socket object 2: arguments = address family(ipv4) & socket type(tcp)
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-sock.bind((HOST, PORT))
-sock.listen(1)
+try:
+    # associate socket with specific network interface and port number
+    sock.bind((HOST, PORT))
+except socket.error as e:
+    str(e)
+
+# listen for connections, opens up the port
+# number = number of clients able to connect (starts at 0?)
+sock.listen(2)
 
 
 def receive_data():
@@ -37,11 +46,14 @@ def receive_data():
 def waiting_for_connection():
     global connection_established, conn, addr
     conn, addr = sock.accept()  # until it receives a connection, the execution hangs on
+    # when a client connects, accept() returns a new socket object representing the connection and a tuple holding
+    # the address of the client
     print('Client is connected!')
     connection_established = True
     receive_data()
 
 
+# create a thread for waiting for connection because it has to wait for external events
 create_thread(waiting_for_connection)
 
 

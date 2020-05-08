@@ -2,6 +2,11 @@ import pygame
 from grid import Grid
 
 import os
+
+# set up client
+
+clientNumber = 0
+
 # window always appears in same place relative to upper-left corner
 os.environ['SDL_VIDEO_WINDOW_POS'] = '400, 100'
 
