@@ -38,13 +38,14 @@ def receive_data():
         # block main thread, amount of bytes it can receive + decode byte string to regular string
         data = sock.recv(1024).decode()
         data = data.split('-')  # will create a list with data x, y, yourturn, playing
-        x, y = int(data[0]), int(data[0])  # receive x and y as integer from data list
+        x, y = int(data[0]), int(data[1])  # receive x and y as integer from data list
         if data[2] == "yourturn":
             turn = True
         if data[3] == 'False':
             grid.game_over = True  #when playing is false, game is over
         if grid.get_cell_value(x, y) == 0:
-            grid.set_cell_value(x, y, current_player)
+            # don't use current_player variable, pass player so client and server blit the same image
+            grid.set_cell_value(x, y, "Cookie")
         print(data)
 
 

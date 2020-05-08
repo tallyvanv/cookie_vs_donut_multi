@@ -49,7 +49,6 @@ class Grid:
     # get position of mouse and cet cell accordingly
     def get_mouse(self, x, y, current_player):
         # only execute inner if statement if cell is empty
-        # use switch_player variable to make sure that we don't switch when clicking on non-empty cell
         if self.get_cell_value(x, y) == 0:
             # remove player switching because this happens through server and client
             self.set_cell_value(x, y, current_player)
