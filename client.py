@@ -1,11 +1,10 @@
 import pygame
 from grid import Grid
+import socket
+import threading
 
 import os
 
-# set up client
-
-clientNumber = 0
 
 # window always appears in same place relative to upper-left corner
 os.environ['SDL_VIDEO_WINDOW_POS'] = '400, 100'
@@ -13,6 +12,25 @@ os.environ['SDL_VIDEO_WINDOW_POS'] = '400, 100'
 # create playing surface
 surface = pygame.display.set_mode((600, 600))
 pygame.display.set_caption('Cookie vs. Donut')
+
+
+# threading to prevent connection blocking the main thread
+def create_thread(target):
+    thread = threading.Thread(target=target)
+    thread.daemon = True
+    thread.start()
+
+
+# set up client
+
+HOST = '127.0.0.1'  # The server's hostname or IP address
+PORT = 65432  # The port used by the server
+
+# 1: create socket object 2: arguments = address family(ipv4) & socket type(tcp), same as server
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock.connect((HOST, PORT))
+
+
 
 # import grid object
 
