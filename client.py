@@ -5,7 +5,6 @@ import threading
 
 import os
 
-
 # window always appears in same place relative to upper-left corner (diff position from server)
 os.environ['SDL_VIDEO_WINDOW_POS'] = '850, 100'
 
@@ -42,7 +41,7 @@ def receive_data():
         if data[2] == "yourturn":
             turn = True
         if data[3] == 'False':
-            grid.game_over = True  #when playing is false, game is over
+            grid.game_over = True  # when playing is false, game is over
         if grid.get_cell_value(x, y) == 0:
             # don't use current_player variable, pass player so client and server blit the same image
             grid.set_cell_value(x, y, "Cookie")
@@ -77,6 +76,8 @@ while game_still_going:
                     # each cell is 200x200 rectangle so divide by 200 (always divide by dimensions cell)
                     # using integer division (//), we will get the integer coords of [0-2, 0-2]
                     grid.get_mouse(cellX, cellY, current_player)
+                    if grid.game_over:
+                        playing = False
                     send_data = f'{cellX}-{cellY}-{"yourturn"}-{playing}'.encode()
                     # on the client side we're using socket send method
                     sock.send(send_data)
@@ -87,14 +88,14 @@ while game_still_going:
             if event.key == pygame.K_SPACE and grid.game_over:
                 grid.clear_grid()
                 grid.game_over = False
+                playing = True
 
                 # grid.print_grid()  # print grid row by row for debugging purposes
 
-
-# fill surface with black colour
+    # fill surface with black colour
     surface.fill((0, 0, 0))
 
-# invoke draw method from grid object onto surface
+    # invoke draw method from grid object onto surface
     grid.draw(surface)
 
     pygame.display.flip()

@@ -96,6 +96,8 @@ while game_still_going:
                     # convert screen coords into cell coords
                     # each cell is 200x200 rectangle so divide by 200 (always divide by dimensions cell)
                     grid.get_mouse(cellX, cellY, current_player)
+                    if grid.game_over:
+                        playing = False
                     # communicate position with formatted string, encode to make it a byte string
                     # because you can't send regular strings through tcp network
                     send_data = f'{cellX}-{cellY}-{"yourturn"}-{playing}'.encode()
