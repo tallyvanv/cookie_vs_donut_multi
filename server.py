@@ -20,9 +20,9 @@ def create_thread(target):
     thread.start()
 
 
-HOST = '127.0.0.1'  # standard loopback interface address (localhost), '' or socket.gethostname()
+HOST = '10.242.147.136'  # standard loopback interface address (localhost), '' or socket.gethostname()
 # only processes on the host can connect to server, empty string = connections on all available IPv4 interfaces
-PORT = 65432  # Port to listen on (non-privileged are > 1023)
+PORT = 5555  # Port to listen on (non-privileged are > 1023)
 connection_established = False
 conn, addr = None, None
 

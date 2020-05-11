@@ -123,8 +123,3 @@ class Grid:
         for y in range(len(self.grid)):
             for x in range(len(self.grid[y])):
                 self.set_cell_value(x, y, 0)
-
-    # # print for debugging
-    # def print_grid(self):
-    #     for row in self.grid:
-    #         print(row)
