@@ -22,7 +22,7 @@ def create_thread(target):
 
 # set up client
 
-HOST = '10.242.147.136'  # The server's hostname or IP address
+HOST = '192.168.1.28'  # The server's hostname or IP address
 PORT = 5555  # The port used by the server
 
 # 1: create socket object 2: arguments = address family(ipv4) & socket type(tcp), same as server
